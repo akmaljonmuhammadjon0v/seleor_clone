@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic';
 import React, { ReactNode } from 'react';
 
-interface NoSsrProps {
+interface NoSSRProps {
 	children: ReactNode;
 }
 
-const NoSSR = ({ children }: NoSsrProps) => (
+const NoSSR = ({ children }: NoSSRProps) => (
 	<React.Fragment>{children}</React.Fragment>
 );
 

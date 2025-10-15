@@ -10,7 +10,7 @@ const HomePage = () => {
 		<>
 			<div className='flex justify-between items-center'>
 				<h1 className='text-xl font-bold'>Products</h1>
-				<Filter />
+				<Filter showCategory />
 			</div>
 			<Separator className='my-3' />
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
