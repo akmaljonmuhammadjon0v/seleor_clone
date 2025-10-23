@@ -26,8 +26,8 @@ class UserController {
 	// [GET] /user/profile/:id
 	async getProfile(req, res, next) {
 		try {
-			const profile = await userModel.findById(req.params.id);
-			return res.json(profile);
+			const user = await userModel.findById(req.params.id).select('-password');
+			return res.json({ user });
 		} catch (error) {
 			next(error);
 		}
@@ -35,7 +35,7 @@ class UserController {
 	// [GET] /user/orders
 	async getOrders(req, res, next) {
 		try {
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const orders = await orderModel.find({ user: userId });
 			return res.json(orders);
 		} catch (error) {
@@ -45,7 +45,7 @@ class UserController {
 	// [GET] /user/transactions
 	async getTransactions(req, res, next) {
 		try {
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const transactions = await transactionModel.find({ user: userId });
 			return res.json(transactions);
 		} catch (error) {
@@ -55,7 +55,7 @@ class UserController {
 	// [GET] /user/favorites
 	async getFavorites(req, res, next) {
 		try {
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const user = await userModel.findById(userId).populate('favorites');
 			return res.json(user.favorites);
 		} catch (error) {
@@ -65,7 +65,7 @@ class UserController {
 	// [GET] /user/statistics
 	async getStatistics(req, res, next) {
 		try {
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const user = await userModel.findById(userId);
 
 			const totalOrders = await orderModel.countDocuments({ user: user._id });
@@ -83,7 +83,7 @@ class UserController {
 	async addFavorite(req, res, next) {
 		try {
 			const { productId } = req.body;
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const user = await userModel.findById(userId);
 			user.favorites.push(productId);
 			await user.save();
@@ -95,7 +95,7 @@ class UserController {
 	// [PUT] /user/update-profile
 	async updateProfile(req, res, next) {
 		try {
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const user = await userModel.findById(userId);
 			user.set(req.body);
 			await user.save();
@@ -108,7 +108,7 @@ class UserController {
 	async updatePassword(req, res, next) {
 		try {
 			const { oldPassword, newPassword } = req.body;
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const user = await userModel.findById(userId);
 
 			const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
@@ -126,7 +126,7 @@ class UserController {
 	async deleteFavorite(req, res, next) {
 		try {
 			const { id } = req.params;
-			const userId = '68f8e34d677fa31f782e546b';
+			const userId = '67420187ce7f12bf6ec22428';
 			const user = await userModel.findById(userId);
 			user.favorites.pull(id);
 			await user.save();

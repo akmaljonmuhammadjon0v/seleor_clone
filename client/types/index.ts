@@ -7,6 +7,24 @@ export interface QueryProps {
 	key: string;
 	value?: string | null;
 }
+export interface ReturnActionType {
+	user: IUser;
+	failure: string;
+}
+export interface IUser {
+	email: string;
+	fullName: string;
+	password: string;
+	_id: string;
+	role: string;
+	orderCount: number;
+	totalPrice: number;
+	avatar: string;
+	avatarKey: string;
+	isDeleted: boolean;
+	deletedAt: Date;
+	favorites: IProduct[];
+}
 export interface IProduct {
 	title: string;
 	category: string;

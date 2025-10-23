@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import Navbar from '@/components/shared/navbar';
+import SessionProvider from '@/components/providers/session.provider';
 
 const montserrat = Montserrat({
 	weight: ['400', '500', '600', '700', '800', '900'],
@@ -20,12 +21,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: ChildProps) {
 	return (
-		<html lang='en'>
-			<body className={`${montserrat.className} antialiased`}>
-				<Navbar />
-				<main className='container max-w-6xl mt-24'>{children}</main>
-				<Toaster />
-			</body>
-		</html>
+		<SessionProvider>
+			<html lang='en'>
+				<body className={`${montserrat.className} antialiased`}>
+					<Navbar />
+					<main className='container max-w-6xl mt-24'>{children}</main>
+					<Toaster />
+				</body>
+			</html>
+		</SessionProvider>
 	);
 }
