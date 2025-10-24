@@ -7,10 +7,23 @@ export interface QueryProps {
 	key: string;
 	value?: string | null;
 }
+
 export interface ReturnActionType {
 	user: IUser;
 	failure: string;
+	status: number;
 }
+
+export interface IProduct {
+	title: string;
+	category: string;
+	price: number;
+	image: string;
+	description: string;
+	imageKey: string;
+	_id: string;
+}
+
 export interface IUser {
 	email: string;
 	fullName: string;
@@ -24,13 +37,4 @@ export interface IUser {
 	isDeleted: boolean;
 	deletedAt: Date;
 	favorites: IProduct[];
-}
-export interface IProduct {
-	title: string;
-	category: string;
-	price: number;
-	image: string;
-	description: string;
-	imageKey: string;
-	_id: string;
 }
