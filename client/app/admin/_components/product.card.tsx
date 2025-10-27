@@ -1,12 +1,6 @@
 'use client';
-import { Badge } from '@/components/ui/badge';
-import { IProduct } from '@/types';
-import Image from 'next/image';
-import React from 'react';
-import NoSSR from '@/lib/ssr';
-import { Separator } from '@/components/ui/separator';
-import { formatPrice } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+
+import { deleteProduct } from '@/actions/admin.action';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -18,30 +12,58 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import useAction from '@/hooks/use-action';
 import { useProduct } from '@/hooks/use-product';
+import { toast } from '@/hooks/use-toast';
+import { formatPrice } from '@/lib/utils';
+import { IProduct } from '@/types';
+import Image from 'next/image';
+import { FC } from 'react';
+import NoSSR from 'react-no-ssr';
 
 interface Props {
-	product: Partial<IProduct>;
+	product: IProduct;
 }
-
-const ProductCard = ({ product }: Props) => {
-	const { setOpen } = useProduct();
+const ProductCard: FC<Props> = ({ product }) => {
+	const { setOpen, setProduct } = useProduct();
+	const { isLoading, onError, setIsLoading } = useAction();
 
 	const onEdit = () => {
 		setOpen(true);
+		setProduct(product);
 	};
+
+	async function onDelete() {
+		setIsLoading(true);
+		const res = await deleteProduct({ id: product._id });
+		if (res?.serverError || res?.validationErrors || !res?.data) {
+			return onError('Something went wrong');
+		}
+		if (res.data.failure) {
+			return onError(res.data.failure);
+		}
+		if (res.data.status === 200) {
+			toast({ description: 'Product deleted successfully' });
+			setIsLoading(false);
+		}
+	}
+
 	return (
 		<div className={'border relative flex justify-between flex-col'}>
-			<div className='bg-secondary relative '>
+			<div className='bg-secondary relative'>
 				<Image
 					src={product.image!}
+					width={200}
+					height={200}
+					className='mx-auto'
 					alt={product.title!}
-					width={300}
-					height={300}
-					className='object-cover'
 				/>
 				<Badge className='absolute top-0 left-0'>{product.category}</Badge>
 			</div>
+
 			<div className='p-2'>
 				<div className='flex justify-between items-center text-sm'>
 					<h1 className='font-bold'>{product.title}</h1>
@@ -49,11 +71,12 @@ const ProductCard = ({ product }: Props) => {
 						<p className='font-medium'>{formatPrice(product.price!)}</p>
 					</NoSSR>
 				</div>
-				<p className='text-xs text-muted-foreground leading-4'>
+				<p className='text-xs text-muted-foreground leading-5'>
 					{product.description}
 				</p>
 				<Separator className='my-2' />
 			</div>
+
 			<div className='grid grid-cols-2 gap-2 px-2 pb-2'>
 				<Button variant={'secondary'} onClick={onEdit}>
 					Edit
@@ -71,8 +94,10 @@ const ProductCard = ({ product }: Props) => {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<AlertDialogAction>Continue</AlertDialogAction>
+							<AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+							<AlertDialogAction onClick={onDelete} disabled={isLoading}>
+								Continue
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>

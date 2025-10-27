@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { FC } from 'react';
 import { Button } from '../ui/button';
 import { Heart } from 'lucide-react';
-import NoSSR from '@/lib/ssr';
+import NoSSR from 'react-no-ssr';
 import { formatPrice } from '@/lib/utils';
 
 interface Props {

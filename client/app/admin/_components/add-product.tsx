@@ -36,13 +36,18 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { UploadDropzone } from '@/lib/uploadthing';
 import Image from 'next/image';
-import { createProduct, deleteFile } from '@/actions/admin.action';
+import {
+	createProduct,
+	deleteFile,
+	updateProduct,
+} from '@/actions/admin.action';
 import useAction from '@/hooks/use-action';
 import { toast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 const AddProduct = () => {
 	const { isLoading, onError, setIsLoading } = useAction();
-	const { open, setOpen } = useProduct();
+	const { open, setOpen, product, setProduct } = useProduct();
 
 	const form = useForm<z.infer<typeof productSchema>>({
 		resolver: zodResolver(productSchema),
@@ -63,7 +68,12 @@ const AddProduct = () => {
 				variant: 'destructive',
 			});
 		setIsLoading(true);
-		const res = await createProduct(values);
+		let res;
+		if (product?._id) {
+			res = await updateProduct({ ...values, id: product._id });
+		} else {
+			res = await createProduct(values);
+		}
 		if (res?.serverError || res?.validationErrors || !res?.data) {
 			return onError('Something went wrong');
 		}
@@ -76,10 +86,25 @@ const AddProduct = () => {
 			form.reset();
 			setIsLoading(false);
 		}
+		if (res.data.status === 200) {
+			toast({ description: 'Product updated successfully' });
+			setOpen(false);
+			form.reset();
+			setIsLoading(false);
+		}
 	}
 
 	function onOpen() {
 		setOpen(true);
+		setProduct({
+			_id: '',
+			title: '',
+			description: '',
+			category: '',
+			price: 0,
+			image: '',
+			imageKey: '',
+		});
 	}
 
 	function onDeleteImage() {
@@ -87,6 +112,12 @@ const AddProduct = () => {
 		form.setValue('image', '');
 		form.setValue('imageKey', '');
 	}
+
+	useEffect(() => {
+		if (product) {
+			form.reset({ ...product, price: product.price.toString() });
+		}
+	}, [product]);
 
 	return (
 		<>
@@ -159,7 +190,7 @@ const AddProduct = () => {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													{categories.map(category => (
+													{categories.slice(1).map(category => (
 														<SelectItem value={category} key={category}>
 															{category}
 														</SelectItem>

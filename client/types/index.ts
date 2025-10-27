@@ -2,6 +2,10 @@ export interface ChildProps {
 	children: React.ReactNode;
 }
 
+export type SearchParams = Promise<{
+	[key: string]: string | string[] | undefined;
+}>;
+
 export interface QueryProps {
 	params: string;
 	key: string;
@@ -13,6 +17,7 @@ export interface ReturnActionType {
 	failure: string;
 	status: number;
 	products: IProduct[];
+	isNext: boolean;
 }
 
 export interface IProduct {

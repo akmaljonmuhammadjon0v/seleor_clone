@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { formatPrice } from '@/lib/utils';
-import NoSSR from '@/lib/ssr';
+import NoSSR from 'react-no-ssr';
 interface Props {
 	product: Partial<IProduct>;
 }
