@@ -1,4 +1,4 @@
-import WatchListCard from '@/components/Card/watch-list.card';
+import WatchListCard from '@/components/card/watch-list.card';
 import Filter from '@/components/shared/filter';
 import Pagination from '@/components/shared/pagination';
 import { Separator } from '@/components/ui/separator';
