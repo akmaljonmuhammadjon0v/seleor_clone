@@ -5,8 +5,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const errorMiddleware = require('./middlewares/error.middleware');
+const stripeController = require('./controllers/stripe.controller');
 
 const app = express();
+
+// Webhook
+app.post(
+	'/webhook/stripe',
+	express.raw({ type: 'application/json' }),
+	stripeController.webhook
+);
 
 // Middleware
 app.use(express.json());
@@ -20,7 +28,6 @@ app.use('/api', require('./routes/index'));
 // Error handling
 app.use(errorMiddleware);
 
-// Run
 const bootstrap = async () => {
 	try {
 		const PORT = process.env.PORT || 5000;
@@ -34,3 +41,6 @@ const bootstrap = async () => {
 };
 
 bootstrap();
+
+// https://www.mongodb.com/try/download/community - Download MongoDB Community Server
+// https://www.mongodb.com/try/download/compass - Download MongoDB Compass
