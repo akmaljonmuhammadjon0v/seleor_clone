@@ -38,3 +38,11 @@ export const TransactionState = {
 	PendingCanceled: -1,
 	PaidCanceled: -2,
 };
+
+export const orderSteps = [
+	{ label: '1. Confirm order', value: 'Order confirmed' },
+	{ label: '2. Start delivery', value: 'Order started to delivery' },
+	{ label: '3. Delivery in progress', value: 'Delivery in progress' },
+	{ label: '4. Complete delivery', value: 'Delivery completed' },
+	{ label: '5. Mark as delivered', value: 'Order delivered' },
+];

@@ -2,11 +2,12 @@ const userModel = require('../models/user.model');
 const productModel = require('../models/product.model');
 const orderModel = require('../models/order.model');
 const transactionModel = require('../models/transaction.model');
+const mailService = require('../services/mail.service');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 class AdminController {
 	constructor() {
-		this.userId = '67420187ce7f12bf6ec22428';
+		this.userId = '6901b5762bcd8d5eefa5a7da';
 		this.createProduct = this.createProduct.bind(this);
 		this.updateProduct = this.updateProduct.bind(this);
 		this.deleteProduct = this.deleteProduct.bind(this);
@@ -320,15 +321,13 @@ class AdminController {
 		try {
 			const { status } = req.body;
 			const { id } = req.params;
-			const userId = this.userId;
-			const user = await userModel.findById(userId);
-			if (!user) return res.json({ failure: 'User not found' });
-			if (user.role !== 'admin')
-				return res.json({ failure: 'User is not admin' });
 			const updatedOrder = await orderModel.findByIdAndUpdate(id, { status });
+			const product = await productModel.findById(updatedOrder.product);
+			const user = await userModel.findById(updatedOrder.user);
 			if (!updatedOrder)
 				return res.json({ failure: 'Failed while updating order' });
-			return res.json({ success: 'Order updated successfully' });
+			await mailService.sendUpdateMail({ user, product, status });
+			return res.json({ status: 200 });
 		} catch (error) {
 			next(error);
 		}
@@ -343,7 +342,6 @@ class AdminController {
 			await productModel.findByIdAndDelete(id);
 			return res.json({ status: 200 });
 		} catch (error) {
-			console.log(error);
 			next(error);
 		}
 	}

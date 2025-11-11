@@ -2,18 +2,32 @@ import { Badge } from '@/components/ui/badge';
 import { formatPrice } from '@/lib/utils';
 import Image from 'next/image';
 import CreateOrderButton from '../_components/create-order.btn';
-import { Params } from '@/types';
 import { getProduct } from '@/actions/user.action';
+import { Params } from '@/types';
+import { FC } from 'react';
 import { notFound } from 'next/navigation';
+
 interface Props {
 	params: Params;
 }
-const Page = async ({ params }: Props) => {
+export async function generateMetadata({ params }: Props) {
+	const { productId } = await params;
+	const res = await getProduct({ id: productId });
+	const product = res?.data?.product;
+
+	return {
+		title: product?.title,
+		description: product?.description,
+		openGraph: { images: product?.image },
+	};
+}
+const Page: FC<Props> = async ({ params }) => {
 	const { productId } = await params;
 
 	const res = await getProduct({ id: productId });
 
 	const product = res?.data?.product;
+
 	if (!product) return notFound();
 
 	return (

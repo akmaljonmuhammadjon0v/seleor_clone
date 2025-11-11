@@ -1,4 +1,4 @@
-const mailService = require('../service/mail.service');
+const mailService = require('../services/mail.service');
 
 class OtpController {
 	async sendOtp(req, res, next) {
