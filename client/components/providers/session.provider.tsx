@@ -2,10 +2,17 @@
 
 import { ChildProps } from '@/types';
 import { SessionProvider as Session } from 'next-auth/react';
-import { FC } from 'react';
+import { FC, Suspense } from 'react';
+import NoSSR from 'react-no-ssr';
 
 const SessionProvider: FC<ChildProps> = ({ children }) => {
-	return <Session>{children}</Session>;
+	return (
+		<NoSSR>
+			<Session>
+				<Suspense>{children}</Suspense>
+			</Session>
+		</NoSSR>
+	);
 };
 
 export default SessionProvider;
